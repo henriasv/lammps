@@ -319,7 +319,7 @@ double FixRepel::compute_vector(int n)
 
 void FixRepel::options(int narg, char **arg)
 {
-  if (narg < 0) error->all(FLERR,"Illegal fix indent command");
+  if (narg < 0) error->all(FLERR,"Illegal fix repel command");
 
   istyle = NONE;
   xstr = ystr = zstr = astr = bstr = cstr = NULL;
@@ -330,7 +330,7 @@ void FixRepel::options(int narg, char **arg)
   int iarg = 0;
   while (iarg < narg) {
     if (strcmp(arg[iarg],"ellipsoid") == 0) {
-      if (iarg+7 > narg) error->all(FLERR,"Illegal fix indent command");
+      if (iarg+7 > narg) error->all(FLERR,"Illegal fix repel command");
 
       if (strstr(arg[iarg+1],"v_") == arg[iarg+1]) {
         int n = strlen(&arg[iarg+1][2]) + 1;
@@ -367,19 +367,19 @@ void FixRepel::options(int narg, char **arg)
       iarg += 7;
     }
       else if (strcmp(arg[iarg],"units") == 0) {
-        if (iarg+2 > narg) error->all(FLERR,"Illegal fix indent command");
+        if (iarg+2 > narg) error->all(FLERR,"Illegal fix repel command");
         if (strcmp(arg[iarg+1],"box") == 0) scaleflag = 0;
         else if (strcmp(arg[iarg+1],"lattice") == 0) scaleflag = 1;
-        else error->all(FLERR,"Illegal fix indent command");
+        else error->all(FLERR,"Illegal fix repel command");
         iarg += 2;
 
       } else if (strcmp(arg[iarg],"side") == 0) {
-        if (iarg+2 > narg) error->all(FLERR,"Illegal fix indent command");
+        if (iarg+2 > narg) error->all(FLERR,"Illegal fix repel command");
         if (strcmp(arg[iarg+1],"in") == 0) side = INSIDE;
         else if (strcmp(arg[iarg+1],"out") == 0) side = OUTSIDE;
-        else error->all(FLERR,"Illegal fix indent command");
+        else error->all(FLERR,"Illegal fix repel command");
         iarg += 2;
-      } else error->all(FLERR,"Illegal fix indent command");
+      } else error->all(FLERR,"Illegal fix repel command");
     }
     std::cout << "xvalue " << xvalue << std::endl;
     std::cout << "yvalue " << yvalue << std::endl;
