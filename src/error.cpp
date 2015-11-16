@@ -16,6 +16,7 @@
 #include "error.h"
 #include "universe.h"
 #include "output.h"
+#include "lammpsexception.h"
 
 using namespace LAMMPS_NS;
 
@@ -95,13 +96,14 @@ void Error::all(const char *file, int line, const char *str)
     if (logfile) fprintf(logfile,"ERROR: %s (%s:%d)\n",str,file,line);
   }
 
-  if (output) delete output;
-  if (screen && screen != stdout) fclose(screen);
-  if (logfile) fclose(logfile);
+  throw LammpsException(string(file), string(str), line);
+//  if (output) delete output;
+//  if (screen && screen != stdout) fclose(screen);
+//  if (logfile) fclose(logfile);
 
-  if (universe->nworlds > 1) MPI_Abort(universe->uworld,1);
-  MPI_Finalize();
-  exit(1);
+//  if (universe->nworlds > 1) MPI_Abort(universe->uworld,1);
+//  MPI_Finalize();
+//  exit(1);
 }
 
 /* ----------------------------------------------------------------------
@@ -121,7 +123,8 @@ void Error::one(const char *file, int line, const char *str)
     if (universe->uscreen)
       fprintf(universe->uscreen,"ERROR on proc %d: %s (%s:%d)\n",
               universe->me,str,file,line);
-  MPI_Abort(world,1);
+    throw LammpsException(string(file), string(str), line);
+  // MPI_Abort(world,1);
 }
 
 /* ----------------------------------------------------------------------

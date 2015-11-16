@@ -45,7 +45,6 @@ class FixAveTime : public Fix {
   int *which,*argindex,*value2index,*offcol;
   int *varlen;               // 1 if value is from variable-length compute
   char **ids;
-
   int nrows;
   int any_variable_length;
   int all_variable_length;
