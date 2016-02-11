@@ -74,7 +74,7 @@ class PairLJClass2Kokkos : public PairLJClass2 {
   }
 
   Kokkos::DualView<params_lj**,Kokkos::LayoutRight,DeviceType> k_params;
-  typename Kokkos::DualView<params_lj**,Kokkos::LayoutRight,DeviceType>::t_dev_const params;
+  typename Kokkos::DualView<params_lj**,Kokkos::LayoutRight,DeviceType>::t_dev_const_um params;
   params_lj m_params[MAX_TYPES_STACKPARAMS+1][MAX_TYPES_STACKPARAMS+1];  // hardwired to space for 15 atom types
   F_FLOAT m_cutsq[MAX_TYPES_STACKPARAMS+1][MAX_TYPES_STACKPARAMS+1];
   typename ArrayTypes<DeviceType>::t_x_array_randomread x;
@@ -120,5 +120,17 @@ class PairLJClass2Kokkos : public PairLJClass2 {
 #endif
 
 /* ERROR/WARNING messages:
+
+E: Illegal ... command
+
+UNDOCUMENTED
+
+E: Cannot use Kokkos pair style with rRESPA inner/middle
+
+UNDOCUMENTED
+
+E: Cannot use chosen neighbor list style with lj/class2/kk
+
+UNDOCUMENTED
 
 */

@@ -27,7 +27,7 @@ enum{NSQ,BIN,MULTI};     // also in neigh_list.cpp
 
 /* ---------------------------------------------------------------------- */
 
-NeighborKokkos::NeighborKokkos(LAMMPS *lmp) : Neighbor(lmp), 
+NeighborKokkos::NeighborKokkos(LAMMPS *lmp) : Neighbor(lmp),
   neighbond_host(lmp),neighbond_device(lmp)
 {
   atoms_per_bin = 16;
@@ -51,15 +51,16 @@ NeighborKokkos::~NeighborKokkos()
   if (!copymode) {
     memory->destroy_kokkos(k_cutneighsq,cutneighsq);
     cutneighsq = NULL;
-    
+
     for (int i = 0; i < nlist_host; i++) delete lists_host[i];
     delete [] lists_host;
     for (int i = 0; i < nlist_device; i++) delete lists_device[i];
     delete [] lists_device;
-    
+
     delete [] pair_build_device;
     delete [] pair_build_host;
-    
+
+    memory->destroy_kokkos(k_ex_type,ex_type);
     memory->destroy_kokkos(k_ex1_type,ex1_type);
     memory->destroy_kokkos(k_ex2_type,ex2_type);
     memory->destroy_kokkos(k_ex1_group,ex1_group);
@@ -68,7 +69,7 @@ NeighborKokkos::~NeighborKokkos()
     memory->destroy_kokkos(k_ex1_bit,ex1_bit);
     memory->destroy_kokkos(k_ex2_bit,ex2_bit);
     memory->destroy_kokkos(k_ex_mol_bit,ex_mol_bit);
-    
+
     memory->destroy_kokkos(k_bondlist,bondlist);
     memory->destroy_kokkos(k_anglelist,anglelist);
     memory->destroy_kokkos(k_dihedrallist,dihedrallist);
@@ -170,36 +171,36 @@ int NeighborKokkos::init_lists_kokkos()
 /* ---------------------------------------------------------------------- */
 
 void NeighborKokkos::init_list_flags1_kokkos(int i)
-{ 
+{
   if (lists_host[i]) {
     lists_host[i]->buildflag = 1;
     if (pair_build_host[i] == NULL) lists_host[i]->buildflag = 0;
     if (requests[i]->occasional) lists_host[i]->buildflag = 0;
-    
+
     lists_host[i]->growflag = 1;
     if (requests[i]->copy) lists_host[i]->growflag = 0;
-    
+
     lists_host[i]->stencilflag = 1;
     if (style == NSQ) lists_host[i]->stencilflag = 0;
     if (stencil_create[i] == NULL) lists_host[i]->stencilflag = 0;
-    
+
     lists_host[i]->ghostflag = 0;
     if (requests[i]->ghost) lists_host[i]->ghostflag = 1;
     if (requests[i]->ghost && !requests[i]->occasional) anyghostlist = 1;
   }
-  
+
   if (lists_device[i]) {
     lists_device[i]->buildflag = 1;
     if (pair_build_device[i] == NULL) lists_device[i]->buildflag = 0;
     if (requests[i]->occasional) lists_device[i]->buildflag = 0;
-    
+
     lists_device[i]->growflag = 1;
     if (requests[i]->copy) lists_device[i]->growflag = 0;
-    
+
     lists_device[i]->stencilflag = 1;
     if (style == NSQ) lists_device[i]->stencilflag = 0;
     if (stencil_create[i] == NULL) lists_device[i]->stencilflag = 0;
-    
+
     lists_device[i]->ghostflag = 0;
     if (requests[i]->ghost) lists_device[i]->ghostflag = 1;
     if (requests[i]->ghost && !requests[i]->occasional) anyghostlist = 1;
@@ -209,7 +210,7 @@ void NeighborKokkos::init_list_flags1_kokkos(int i)
 /* ---------------------------------------------------------------------- */
 
 void NeighborKokkos::init_list_flags2_kokkos(int i)
-{ 
+{
   if (lists_host[i]) {
     if (lists_host[i]->buildflag) blist[nblist++] = i;
     if (lists_host[i]->growflag && requests[i]->occasional == 0)
@@ -396,9 +397,9 @@ void NeighborKokkos::operator()(TagNeighborCheckDistance<DeviceType>, const int 
 void NeighborKokkos::build(int topoflag)
 {
   if (nlist_device)
-    this->template build_kokkos<LMPDeviceType>(topoflag);
+    build_kokkos<LMPDeviceType>(topoflag);
   else
-    this->template build_kokkos<LMPHostType>(topoflag);
+    build_kokkos<LMPHostType>(topoflag);
 }
 
 template<class DeviceType>
@@ -419,7 +420,8 @@ void NeighborKokkos::build_kokkos(int topoflag)
     x = atomKK->k_x;
     int nlocal = atom->nlocal;
     if (includegroup) nlocal = atom->nfirst;
-    if (nlocal > maxhold) {
+    int maxhold_kokkos = xhold.view<DeviceType>().dimension_0();
+    if (nlocal > maxhold || maxhold_kokkos < maxhold) {
       maxhold = atom->nmax;
       xhold = DAT::tdual_x_array("neigh:xhold",maxhold);
     }
@@ -518,7 +520,7 @@ void NeighborKokkos::setup_bins_kokkos(int i)
     (this->*stencil_create[slist[i]])(lists_device[slist[i]],sx,sy,sz);
   }
 
-  if (i < nslist-1) return;
+  //if (i < nslist-1) return; // this won't work if a non-kokkos neighbor list is last
 
   if (maxhead > k_bins.d_view.dimension_0()) {
     k_bins = DAT::tdual_int_2d("Neighbor::d_bins",maxhead,atoms_per_bin);

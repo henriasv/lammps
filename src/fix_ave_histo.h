@@ -20,7 +20,7 @@ FixStyle(ave/histo,FixAveHisto)
 #ifndef LMP_FIX_AVE_HISTO_H
 #define LMP_FIX_AVE_HISTO_H
 
-#include "stdio.h"
+#include <stdio.h>
 #include "fix.h"
 
 namespace LAMMPS_NS {
@@ -28,15 +28,15 @@ namespace LAMMPS_NS {
 class FixAveHisto : public Fix {
  public:
   FixAveHisto(class LAMMPS *, int, char **);
-  ~FixAveHisto();
+  virtual ~FixAveHisto();
   int setmask();
   void init();
   void setup(int);
-  void end_of_step();
+  virtual void end_of_step();
   double compute_vector(int);
   double compute_array(int,int);
 
- private:
+ protected:
   int me,nvalues;
   int nrepeat,nfreq,irepeat;
   bigint nvalid,nvalid_last;
@@ -213,10 +213,18 @@ E: Variable name for fix ave/histo does not exist
 
 Self-explanatory.
 
+E: Error writing file header
+
+UNDOCUMENTED
+
 E: Invalid timestep reset for fix ave/histo
 
 Resetting the timestep has invalidated the sequence of timesteps this
 fix needs to process.
+
+E: Error writing out histogram data
+
+UNDOCUMENTED
 
 E: Cannot open fix ave/histo file %s
 

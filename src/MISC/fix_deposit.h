@@ -20,7 +20,7 @@ FixStyle(deposit,FixDeposit)
 #ifndef LMP_FIX_DEPOSIT_H
 #define LMP_FIX_DEPOSIT_H
 
-#include "stdio.h"
+#include <stdio.h>
 #include "fix.h"
 
 namespace LAMMPS_NS {
@@ -152,6 +152,10 @@ Self-explanatory.
 E: Fix deposit and fix shake not using same molecule template ID
 
 Self-explanatory.
+
+W: Fix deposit near setting < possible overlap separation %g
+
+UNDOCUMENTED
 
 W: Particle deposition was unsuccessful
 

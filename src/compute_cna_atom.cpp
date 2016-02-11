@@ -15,8 +15,8 @@
    Contributing author: Wan Liang (Chinese Academy of Sciences)
 ------------------------------------------------------------------------- */
 
-#include "string.h"
-#include "stdlib.h"
+#include <string.h>
+#include <stdlib.h>
 #include "compute_cna_atom.h"
 #include "atom.h"
 #include "update.h"
@@ -29,7 +29,7 @@
 #include "comm.h"
 #include "memory.h"
 #include "error.h"
-#include "math.h"
+#include <math.h>
 
 using namespace LAMMPS_NS;
 
@@ -262,7 +262,7 @@ void ComputeCNAAtom::compute_peratom()
         firstflag = 1;
         ncommon = 0;
         for (inear = 0; inear < nnearest[i]; inear++)
-          for (jnear = 0; jnear < n; jnear++)
+          for (jnear = 0; (jnear < n) && (n < MAXNEAR); jnear++)
             if (nearest[i][inear] == onenearest[jnear]) {
               if (ncommon < MAXCOMMON) common[ncommon++] = nearest[i][inear];
               else if (firstflag) {

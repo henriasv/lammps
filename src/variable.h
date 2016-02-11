@@ -14,12 +14,13 @@
 #ifndef LMP_VARIABLE_H
 #define LMP_VARIABLE_H
 
-#include "stdlib.h"
+#include <stdlib.h>
 #include "pointers.h"
 
 namespace LAMMPS_NS {
 
 class Variable : protected Pointers {
+ friend class Info;
  public:
   Variable(class LAMMPS *);
   ~Variable();
@@ -73,7 +74,7 @@ class Variable : protected Pointers {
   class Python *python;    // ptr to embedded Python interpreter
 
   struct Tree {            // parse tree for atom-style variables
-    double value;          // single scalar  
+    double value;          // single scalar
     double *array;         // per-atom or per-type list of doubles
     int *iarray;           // per-atom list of ints
     bigint *barray;        // per-atom list of bigints
@@ -148,6 +149,10 @@ E: Universe/uloop variable count < # of partitions
 
 A universe or uloop style variable must specify a number of values >= to the
 number of processor partitions.
+
+E: Cannot open temporary file for world counter.
+
+UNDOCUMENTED
 
 E: All universe/uloop variables must have same # of values
 
@@ -410,6 +415,18 @@ Self-explanatory.
 E: Invalid variable style in special function next
 
 Only file-style or atomfile-style variables can be used with next().
+
+E: Invalid is_active() function in variable formula
+
+UNDOCUMENTED
+
+E: Invalid is_available() function in variable formula
+
+UNDOCUMENTED
+
+E: Invalid is_defined() function in variable formula
+
+UNDOCUMENTED
 
 E: Indexed per-atom vector in variable formula without atom map
 

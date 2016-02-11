@@ -31,7 +31,7 @@ class FixPropertyAtom : public Fix {
   int setmask();
   void init();
 
-  void read_data_section(char *, int, char *);
+  void read_data_section(char *, int, char *, tagint);
   bigint read_data_skip_lines(char *);
   void write_data_section_size(int, int &, int &);
   void write_data_section_pack(int, double **);
@@ -92,6 +92,10 @@ E: Fix property/atom vector name already exists
 
 The name for an integer or floating-point vector must be unique.
 
+W: Fix property/atom mol or charge w/out ghost communication
+
+UNDOCUMENTED
+
 E: Atom style was redefined after using fix property/atom
 
 This is not allowed.
@@ -100,6 +104,10 @@ E: Incorrect %s format in data file
 
 A section of the data file being read by fix property/atom does
 not have the correct number of values per line.
+
+E: Too few lines in %s section of data file
+
+UNDOCUMENTED
 
 E: Invalid atom ID in %s section of data file
 

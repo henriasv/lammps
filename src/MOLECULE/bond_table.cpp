@@ -15,9 +15,9 @@
    Contributing author: Chuanfu Luo (luochuanfu@gmail.com)
 ------------------------------------------------------------------------- */
 
-#include "math.h"
-#include "stdlib.h"
-#include "string.h"
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
 #include "bond_table.h"
 #include "atom.h"
 #include "neighbor.h"
@@ -304,7 +304,7 @@ void BondTable::read_table(Table *tb, char *file, char *keyword)
   while (1) {
     if (fgets(line,MAXLINE,fp) == NULL)
       error->one(FLERR,"Did not find keyword in table file");
-    if (strspn(line," \t\n") == strlen(line)) continue;    // blank line
+    if (strspn(line," \t\n\r") == strlen(line)) continue;    // blank line
     if (line[0] == '#') continue;                          // comment
     char *word = strtok(line," \t\n\r");
     if (strcmp(word,keyword) == 0) break;           // matching keyword

@@ -11,7 +11,7 @@
    See the README file in the top-level LAMMPS directory.
 ------------------------------------------------------------------------- */
 
-#include "stdlib.h"
+#include <stdlib.h>
 #include "atom_vec_full_kokkos.h"
 #include "atom_kokkos.h"
 #include "comm_kokkos.h"
@@ -764,8 +764,11 @@ struct AtomVecFullKokkos_PackBorder {
   union ubuf {
     double d;
     int64_t i;
+    KOKKOS_INLINE_FUNCTION
     ubuf(double arg) : d(arg) {}
+    KOKKOS_INLINE_FUNCTION
     ubuf(int64_t arg) : i(arg) {}
+    KOKKOS_INLINE_FUNCTION
     ubuf(int arg) : i(arg) {}
   };
 
@@ -1030,8 +1033,11 @@ struct AtomVecFullKokkos_UnpackBorder {
   union ubuf {
     double d;
     int64_t i;
+    KOKKOS_INLINE_FUNCTION
     ubuf(double arg) : d(arg) {}
+    KOKKOS_INLINE_FUNCTION
     ubuf(int64_t arg) : i(arg) {}
+    KOKKOS_INLINE_FUNCTION
     ubuf(int arg) : i(arg) {}
   };
 
@@ -1177,8 +1183,11 @@ struct AtomVecFullKokkos_PackExchangeFunctor {
   union ubuf {
     double d;
     int64_t i;
+    KOKKOS_INLINE_FUNCTION
     ubuf(double arg) : d(arg) {}
+    KOKKOS_INLINE_FUNCTION
     ubuf(int64_t arg) : i(arg) {}
+    KOKKOS_INLINE_FUNCTION
     ubuf(int arg) : i(arg) {}
   };
 
@@ -1527,8 +1536,11 @@ struct AtomVecFullKokkos_UnpackExchangeFunctor {
   union ubuf {
     double d;
     int64_t i;
+    KOKKOS_INLINE_FUNCTION
     ubuf(double arg) : d(arg) {}
+    KOKKOS_INLINE_FUNCTION
     ubuf(int64_t arg) : i(arg) {}
+    KOKKOS_INLINE_FUNCTION
     ubuf(int arg) : i(arg) {}
   };
 
@@ -1794,6 +1806,10 @@ int AtomVecFullKokkos::size_restart()
 
 int AtomVecFullKokkos::pack_restart(int i, double *buf)
 {
+  sync(Host,X_MASK | V_MASK | TAG_MASK | TYPE_MASK |
+       MASK_MASK | IMAGE_MASK | Q_MASK | MOLECULE_MASK | BOND_MASK |
+       ANGLE_MASK | DIHEDRAL_MASK | IMPROPER_MASK | SPECIAL_MASK);
+
   int m = 1;
   buf[m++] = h_x(i,0);
   buf[m++] = h_x(i,1);
@@ -1863,6 +1879,10 @@ int AtomVecFullKokkos::unpack_restart(double *buf)
     if (atom->nextra_store)
       memory->grow(atom->extra,nmax,atom->nextra_store,"atom:extra");
   }
+
+  modified(Host,X_MASK | V_MASK | TAG_MASK | TYPE_MASK |
+           MASK_MASK | IMAGE_MASK | Q_MASK | MOLECULE_MASK | BOND_MASK |
+           ANGLE_MASK | DIHEDRAL_MASK | IMPROPER_MASK | SPECIAL_MASK);
 
   int m = 1;
   h_x(nlocal,0) = buf[m++];

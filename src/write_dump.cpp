@@ -15,13 +15,15 @@
    Contributing author:  Axel Kohlmeyer (Temple U)
 ------------------------------------------------------------------------- */
 
-#include "string.h"
+#include <string.h>
 #include "write_dump.h"
 #include "style_dump.h"
 #include "dump.h"
 #include "dump_image.h"
 #include "atom.h"
 #include "group.h"
+#include "input.h"
+#include "update.h"
 #include "error.h"
 
 using namespace LAMMPS_NS;
@@ -69,11 +71,14 @@ void WriteDump::command(int narg, char **arg)
   // write out one frame and then delete the dump again
   // set multifile_override for DumpImage so that filename needs no "*"
 
-  if (strcmp(arg[1],"image") == 0) 
+  if (strcmp(arg[1],"image") == 0)
     ((DumpImage *) dump)->multifile_override = 1;
 
   if (strcmp(arg[1],"cfg") == 0)
     ((DumpCFG *) dump)->multifile_override = 1;
+
+  if (update->first_update == 0)
+    error->warning(FLERR,"Calling write_dump before a full system init.");
 
   dump->init();
   dump->write();

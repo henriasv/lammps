@@ -81,6 +81,7 @@ class FixRigidSmall : public Fix {
   int setupflag;            // 1 if body properties are setup, else 0
   int commflag;             // various modes of forward/reverse comm
   int nbody;                // total # of rigid bodies
+  int nlinear;              // total # of linear rigid bodies
   tagint maxmol;            // max mol-ID
   double maxextent;         // furthest distance from body owner to body atom
 
@@ -154,12 +155,12 @@ class FixRigidSmall : public Fix {
   class RanMars *random;            // RNG
 
   int tstat_flag,pstat_flag;        // 0/1 = no/yes thermostat/barostat
-  
+
   int t_chain,t_iter,t_order;
 
   double p_start[3],p_stop[3];
   double p_period[3],p_freq[3];
-  int p_flag[3];  
+  int p_flag[3];
   int pcouple,pstyle;
   int p_chain;
 
@@ -255,10 +256,9 @@ NPT/NPH fix must be defined in input script after all rigid fixes,
 else the rigid fix contribution to the pressure virial is
 incorrect.
 
-W: Cannot count rigid body degrees-of-freedom before bodies are fully initialized h
+W: Cannot count rigid body degrees-of-freedom before bodies are fully initialized
 
-This means the temperature associated with the rigid bodies may be
-incorrect on this timestep.
+UNDOCUMENTED
 
 W: Computing temperature of portions of rigid bodies
 
@@ -270,6 +270,10 @@ not be accounted for.
 E: Fix rigid/small atom has non-zero image flag in a non-periodic dimension
 
 Image flags for non-periodic dimensions should not be set.
+
+E: One or more rigid bodies are a single particle
+
+UNDOCUMENTED
 
 E: Inconsistent use of finite-size particles by molecule template molecules
 
@@ -315,5 +319,10 @@ it is part of, or vice versa.  The solution is to use the communicate
 cutoff command to insure ghost atoms are acquired from far enough away
 to encompass the max distance printed when the fix rigid/small command
 was invoked.
+
+U: Cannot count rigid body degrees-of-freedom before bodies are fully initialized h
+
+This means the temperature associated with the rigid bodies may be
+incorrect on this timestep.
 
 */
