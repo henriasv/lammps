@@ -15,6 +15,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <signal.h>
+#include <unistd.h>
 #include "kokkos.h"
 #include "lammps.h"
 #include "force.h"
@@ -37,7 +39,7 @@ KokkosLMP::KokkosLMP(LAMMPS *lmp, int narg, char **arg) : Pointers(lmp)
 
   // process any command-line args that invoke Kokkos settings
 
-  int ngpu = 0;
+  ngpu = 0;
   int device = 0;
   num_threads = 1;
   numa = 1;
@@ -117,8 +119,12 @@ KokkosLMP::KokkosLMP(LAMMPS *lmp, int narg, char **arg) : Pointers(lmp)
   neighflag = FULL;
   exchange_comm_classic = 0;
   forward_comm_classic = 0;
-  exchange_comm_on_host = 1;
-  forward_comm_on_host = 1;
+  exchange_comm_on_host = 0;
+  forward_comm_on_host = 0;
+
+#ifdef KILL_KOKKOS_ON_SIGSEGV
+  signal(SIGSEGV, my_signal_handler);
+#endif
 }
 
 /* ---------------------------------------------------------------------- */
@@ -159,6 +165,8 @@ void KokkosLMP::accelerator(int narg, char **arg)
       else if (strcmp(arg[iarg+1],"n2") == 0) neighflag = N2;
       else if (strcmp(arg[iarg+1],"full/cluster") == 0) neighflag = FULLCLUSTER;
       else error->all(FLERR,"Illegal package kokkos command");
+      if (neighflag == HALF && (num_threads > 1 || ngpu > 0))
+        error->all(FLERR,"Must use Kokkos half/thread or full neighbor list with threads or GPUs");
       iarg += 2;
     } else if (strcmp(arg[iarg],"binsize") == 0) {
       if (iarg+2 > narg) error->all(FLERR,"Illegal package kokkos command");
@@ -271,4 +279,11 @@ int KokkosLMP::neigh_count(int m)
   for (int i = 0; i < inum; i++) nneigh += h_numneigh[h_ilist[i]];
 
   return nneigh;
+}
+
+void KokkosLMP::my_signal_handler(int sig)
+{
+  if (sig == SIGSEGV) {
+    kill(getpid(),SIGABRT);
+  }
 }

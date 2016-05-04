@@ -57,6 +57,7 @@ class AtomKokkos : public Atom {
   virtual void allocate_type_arrays();
   void sync(const ExecutionSpace space, unsigned int mask);
   void modified(const ExecutionSpace space, unsigned int mask);
+  void sync_overlapping_device(const ExecutionSpace space, unsigned int mask);
   virtual void sort();
   virtual void grow(unsigned int mask);
   virtual void deallocate_topology();
@@ -112,6 +113,6 @@ class SortFunctor {
 
 E: KOKKOS package requires a kokkos enabled atom_style
 
-UNDOCUMENTED
+Self-explanatory.
 
 */

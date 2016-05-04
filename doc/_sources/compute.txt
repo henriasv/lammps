@@ -177,6 +177,7 @@ section of :ref:`this page <cmd_5>`.
 * :doc:`angle/local <compute_bond_local>` - theta and energy of each angle
 * :doc:`angmom/chunk <compute_angmom_chunk>` - angular momentum for each chunk
 * :doc:`body/local <compute_body_local>` - attributes of body sub-particles
+* :doc:`bond <compute_bond>` - values computed by a bond style
 * :doc:`bond/local <compute_bond_local>` - distance and energy of each bond
 * :doc:`centro/atom <compute_centro_atom>` - centro-symmetry parameter for each atom
 * :doc:`chunk/atom <compute_chunk_atom>` - assign chunk IDs to each atom
@@ -229,6 +230,7 @@ section of :ref:`this page <cmd_5>`.
 * :doc:`stress/atom <compute_stress_atom>` - stress tensor for each atom
 * :doc:`temp <compute_temp>` - temperature of group of atoms
 * :doc:`temp/asphere <compute_temp_asphere>` - temperature of aspherical particles
+* :doc:`temp/body <compute_temp_body>` - temperature of body particles
 * :doc:`temp/chunk <compute_temp_chunk>` - temperature of each chunk
 * :doc:`temp/com <compute_temp_com>` - temperature after subtracting center-of-mass velocity
 * :doc:`temp/deform <compute_temp_deform>` - temperature excluding box deformation velocity

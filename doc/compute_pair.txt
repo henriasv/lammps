@@ -26,9 +26,8 @@ compute 1 all pair reax :pre
 [Description:]
 
 Define a computation that extracts additional values calculated by a
-pair style, sums them across processors, and makes them accessible for
-output or further processing by other commands.  The group specified
-for this command is ignored.
+pair style, and makes them accessible for output or further processing
+by other commands.  The group specified for this command is ignored.
 
 The specified {pstyle} must be a pair style used in your simulation
 either by itself or as a sub-style in a "pair_style hybrid or
@@ -46,6 +45,10 @@ as a global scalar by this compute.  This is useful when using
 of the total energy contributed by one sub-style.  If {evalue} is
 specfied as {evdwl} or {ecoul}, then just that portion of the energy
 is stored as a global scalar.
+
+NOTE: The energy returned by the {evdwl} keyword does not include tail
+corrections, even if they are enabled via the
+"pair_modify"_pair_modify.html command.
 
 Some pair styles tally additional quantities, e.g. a breakdown of
 potential energy into a dozen or so components is tallied by the
@@ -67,14 +70,14 @@ The scalar and vector values calculated by this compute are
 "extensive".
 
 The scalar value will be in energy "units"_units.html.  The vector
-values will typically also be in energy "units"_units.html, but
-see the doc page for the pair style for details.
+values will typically also be in energy "units"_units.html, but see
+the doc page for the pair style for details.
 
 [Restrictions:] none
 
 [Related commands:]
 
-"compute pe"_compute_pe.html
+"compute pe"_compute_pe.html, "compute bond"_compute_bond.html
 
 [Default:]
 

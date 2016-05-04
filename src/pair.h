@@ -178,6 +178,8 @@ class Pair : protected Pointers {
   virtual void unpack_reverse_comm(int, int *, double *) {}
   virtual double memory_usage();
 
+  void set_copymode(int value) { copymode = value; }
+
   // specific child-class methods for certain Pair styles
 
   virtual void *extract(const char *, int &) {return NULL;}
@@ -216,8 +218,6 @@ class Pair : protected Pointers {
   // custom data type for accessing Coulomb tables
 
   typedef union {int i; float f;} union_int_float_t;
-
-  double THIRD;
 
   int vflag_fdotr;
   int maxeatom,maxvatom;
@@ -285,13 +285,13 @@ This is probably a bogus thing to do, since tail corrections are
 computed by integrating the density of a periodic system out to
 infinity.
 
-W: Using pair tail corrections with compute set to no
+W: Using pair tail corrections with pair_modify compute no
 
-UNDOCUMENTED
+The tail corrections will thus not be computed.
 
-W: Using pair potential shift with compute set to no
+W: Using pair potential shift with pair_modify compute no
 
-UNDOCUMENTED
+The shift effects will thus not be computed.
 
 W: Using a manybody potential with bonds/angles/dihedrals and special_bond exclusions
 

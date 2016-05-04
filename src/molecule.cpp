@@ -303,7 +303,7 @@ void Molecule::compute_inertia()
     for (int i = 0; i < 6; i++) itensor[i] = 0.0;
     for (int i = 0; i < natoms; i++) {
       if (rmassflag) onemass = rmass[i];
-      else onemass = atom->type[type[i]];
+      else onemass = atom->mass[type[i]];
       dx = dxcom[i][0];
       dy = dxcom[i][1];
       dz = dxcom[i][2];
@@ -318,7 +318,7 @@ void Molecule::compute_inertia()
     if (radiusflag) {
       for (int i = 0; i < natoms; i++) {
         if (rmassflag) onemass = rmass[i];
-        else onemass = atom->type[type[i]];
+        else onemass = atom->mass[type[i]];
         itensor[0] += SINERTIA*onemass * radius[i]*radius[i];
         itensor[1] += SINERTIA*onemass * radius[i]*radius[i];
         itensor[2] += SINERTIA*onemass * radius[i]*radius[i];
@@ -461,7 +461,7 @@ void Molecule::read(int flag)
 
   // error checks
 
-  if (natoms < 1) error->all(FLERR,"No or invalid atom count in molecule file");
+  if (natoms < 1) error->all(FLERR,"No count or invalid atom count in molecule file");
   if (nbonds < 0) error->all(FLERR,"Invalid bond count in molecule file");
   if (nangles < 0) error->all(FLERR,"Invalid angle count in molecule file");
   if (ndihedrals < 0)
@@ -1145,7 +1145,7 @@ void Molecule::special_generate()
         atom1 = i;
         atom2 = bond_atom[i][j];
         if (count[atom1] >= maxspecial)
-          error->one(FLERR,"");
+          error->one(FLERR,"Molecule auto special bond generation overflow");
         special[i][count[atom1]++] = atom2;
       }
     }
@@ -1168,7 +1168,7 @@ void Molecule::special_generate()
         }
         if (!dedup) {
           if (count[i] >= maxspecial)
-            error->one(FLERR,"");
+            error->one(FLERR,"Molecule auto special bond generation overflow");
           special[i][count[i]++] = special[special[i][m]-1][j];
           nspecial[i][1]++;
         }
@@ -1192,7 +1192,7 @@ void Molecule::special_generate()
         }
         if (!dedup) {
           if (count[i] >= maxspecial)
-            error->one(FLERR,"");
+            error->one(FLERR,"Molecule auto special bond generation overflow");
           special[i][count[i]++] = special[special[i][m]-1][j];
           nspecial[i][2]++;
         }
